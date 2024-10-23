@@ -1,31 +1,39 @@
+# train_model.py
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor  # Use RandomForestRegressor for regression tasks
-from sklearn.metrics import mean_squared_error, r2_score
-import joblib
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score, classification_report
 
-# Load dataset
-data = pd.read_csv('House_Price_Predection.csv')  # Update the dataset filename
+# Load the data
+data = pd.read_csv('C:\Users\noori\retail-sector')
 
-# Data preprocessing (modify this based on your dataset)
-# Assuming columns 'num_bedrooms', 'num_bathrooms', 'square_footage', 'location', and 'price'
-data['location'] = data['location'].astype('category').cat.codes  # Encode categorical variables if needed
+# Handle missing values (fill missing cluster_ids or drop rows)
+data['cluster_id'].fillna('unknown', inplace=True)
 
-# Prepare feature and target variables
-X = data[['num_bedrooms', 'num_bathrooms', 'square_footage', 'location']]  # Adjust features as needed
-y = data['price']  # Target variable for house prices
+# Encode categorical variables
+label_encoders = {}
+for column in ['cluster_id', 'hierarchy1_id', 'hierarchy2_id', 'hierarchy3_id', 'hierarchy4_id', 'hierarchy5_id']:
+    le = LabelEncoder()
+    data[column] = le.fit_transform(data[column])
+    label_encoders[column] = le
 
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Features and Target
+X = data[['product_length', 'product_depth', 'product_width', 'hierarchy1_id', 'hierarchy2_id', 'hierarchy3_id', 'hierarchy4_id', 'hierarchy5_id']]
+y = data['cluster_id']
 
-# Train a RandomForest model
-model = RandomForestRegressor(n_estimators=100, random_state=42)  # Change to RandomForestRegressor
-model.fit(X_train, y_train)
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Evaluate the model
-y_pred = model.predict(X_test)
-print(f"Mean Squared Error: {mean_squared_error(y_test, y_pred)}")
-print(f"R^2 Score: {r2_score(y_test, y_pred)}")
+# Train the model
+rf_model = RandomForestClassifier()
+rf_model.fit(X_train, y_train)
 
-# Save the model
-joblib.dump(model, 'house_price_model.pkl')
+# Predictions
+y_pred = rf_model.predict(X_test)
+
+# Evaluation
+print(f"Accuracy: {accuracy_score(y_test, y_pred)}")
+print(classification_report(y_test, y_pred))
+
+
