@@ -10,16 +10,16 @@ driver = webdriver.Chrome(executable_path='path/to/chromedriver')
 driver.get("http://127.0.0.1:5000")  # Assuming Flask is running locally
 
 # Check that the home page is loaded
-assert "Lung Cancer Prediction API" in driver.page_source
+assert "rice-leaf- disease prediction  API" in driver.page_source
 
 # Navigate to the prediction route (if it's a form-based interface)
 driver.get("http://127.0.0.1:5000/predict")
 
 # Find the input fields for prediction (assuming you have a form)
-input_element = driver.find_element(By.NAME, 'features')  # Example input field name
+input_element = driver.find_element(By.type, 'features')  # Example input field name
 
 # Enter data into the form field
-input_element.send_keys("45, Male, Non-smoker")  # Sample data
+input_element.send_keys("color,height")  # Sample data
 
 # Submit the form (assuming there's a submit button)
 submit_button = driver.find_element(By.ID, 'submit')
