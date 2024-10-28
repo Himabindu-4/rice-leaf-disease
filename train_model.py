@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score, classification_report
 
 # Load the data
-data = pd.read_csv('C:\Users\noori\retail-sector')
+data = pd.read_csv('C:\Users\nanna\test-1')
 
 # Handle missing values (fill missing cluster_ids or drop rows)
 data['cluster_id'].fillna('unknown', inplace=True)
